@@ -10,9 +10,9 @@ In Kubernetes, every Pod gets its own IP address.
 
 A pod is treated like a tiny VM on the network.
 
-This is possible because of the CNI (Container Network Interface) plugin.
+This is possible because of the **CNI (Container Network Interface)** plugin.
 
-Examples:
+**Examples:**
 
   * Calico
 
@@ -20,9 +20,9 @@ Examples:
 
   * Cilium
 
-These plugins create a flat cluster network.
+These plugins create a **flat cluster network**.
 
-Meaning:
+**Meaning:**
 
   * Pod A can directly talk to Pod B using its IP.
 
@@ -34,13 +34,13 @@ That’s the Kubernetes networking model.
 
 2️⃣ What Actually Happens When a Pod Is Created?
 
-When a pod starts:
+**When a pod starts:**
 
 1. The kubelet asks the CNI plugin to attach networking.
 
 2. The CNI plugin:
 
-  * Creates a veth pair (virtual ethernet cable).
+  * Creates a **veth pair** (virtual ethernet cable).
 
   * One end goes inside the pod’s network namespace.
 
@@ -60,15 +60,15 @@ So technically:
 
 This is Linux networking, not magic.
 
-3️⃣ Pod-to-Pod Communication (Same Node)
+3️⃣ **Pod-to-Pod Communication (Same Node)**
 
-If two pods are on the same node:
+**If two pods are on the same node:**
 
     Pod A → virtual bridge → Pod B
 
 Traffic never leaves the node.
 
-It goes through:
+**It goes through:**
 
   * veth
 
@@ -78,19 +78,19 @@ It goes through:
 
 Fast. Simple.
 
-4️⃣ Pod-to-Pod Communication (Different Nodes)
+4️⃣ **Pod-to-Pod Communication (Different Nodes)**
 
 Now the important part.
 
-If Pod A is on Node 1 and Pod B is on Node 2:
+**If Pod A is on Node 1 and Pod B is on Node 2:**
 
 The CNI plugin handles routing between nodes.
 
-How?
+**How?**
 
 Depends on the CNI:
 
-Overlay Model (Flannel style)
+**Overlay Model (Flannel style)**
 
   * Encapsulates traffic in VXLAN
 
@@ -98,7 +98,7 @@ Overlay Model (Flannel style)
 
   * Sends over node network
 
-Routing Model (Calico style)
+**Routing Model (Calico style)**
 
   * Uses BGP routing
 
@@ -106,7 +106,7 @@ Routing Model (Calico style)
 
   * Nodes know routes to other pod CIDRs
 
-eBPF Model (Cilium)
+**eBPF Model (Cilium)**
 
   * Uses eBPF for fast routing
 
@@ -118,7 +118,7 @@ The key idea:
 
 That’s it.
 
-5️⃣ What About Services?
+5️⃣ **What About Services?**
 
 Now here’s where people get confused.
 
@@ -128,7 +128,7 @@ So we don’t usually call pods directly.
 
 We use a Service.
 
-When you create a Service:
+**When you create a Service:**
 
   * It gets a ClusterIP.
 
@@ -136,7 +136,7 @@ When you create a Service:
 
   * Traffic to the Service IP gets load-balanced to backend pods.
 
-Internally:
+**Internally:**
 
   * DNS resolves service name to ClusterIP.
 
@@ -144,17 +144,17 @@ Internally:
 
 No external load balancer required for internal traffic.
 
-6️⃣ DNS in the Picture
+6️⃣ **DNS in the Picture**
 
-Kubernetes runs:
+**Kubernetes runs:**
 
   * CoreDNS
 
-When Pod A calls:
+**When Pod A calls:**
 
     http://backend-service
 
-Steps:
+**Steps:**
 
   1. DNS resolves service name.
 
@@ -164,7 +164,7 @@ Steps:
 
 DNS is critical for service discovery.
 
-7️⃣ What Can Block Pod-to-Pod Traffic?
+7️⃣ **What Can Block Pod-to-Pod Traffic?**
 
 This is where production breaks.
 
@@ -174,13 +174,13 @@ By default:
 
 Unless:
 
-1. Network Policies exist
+**1. Network Policies exist**
 
 These are enforced by CNI.
 
 If you use Calico/Cilium, policies are enforced at dataplane level.
 
-2. Cloud Security Groups block node traffic
+**2. Cloud Security Groups block node traffic**
 
 In AWS:
 
@@ -188,7 +188,7 @@ In AWS:
 
   * Pods across nodes won’t talk.
 
-3. Misconfigured CIDR overlap
+**3. Misconfigured CIDR overlap**
 
 If pod CIDR overlaps with VPC CIDR:
 
@@ -196,25 +196,25 @@ You will break routing.
 
 8️⃣ Important Things Most People Miss
 
-🔴 Pod IPs are NOT stable
+🔴 **Pod IPs are NOT stable**
 
 They change if pod restarts.
 
-🔴 Services don’t proxy traffic themselves
+🔴 **Services don’t proxy traffic themselves**
 
 kube-proxy manipulates iptables.
 
-🔴 There is no Docker bridge in modern Kubernetes
+🔴 **There is no Docker bridge in modern Kubernetes**
 
 CRI is used. Container runtime doesn’t handle cluster networking.
 
-🔴 CNI choice affects performance heavily
+🔴 **CNI choice affects performance heavily**
 
 Overlay adds overhead.
 
 eBPF reduces it.
 
-9️⃣ Mental Model (Simple but Accurate)
+9️⃣ **Mental Model (Simple but Accurate)**
 
 Think like this:
 
