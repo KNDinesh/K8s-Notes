@@ -2,11 +2,11 @@
 
 In Kubernetes, every Pod gets its own IP address.
 
-  Not the node IP.
+  * Not the node IP.
 
-  Not NAT.
+  * Not NAT.
 
-  Not port mapping.
+  * Not port mapping.
 
 A pod is treated like a tiny VM on the network.
 
