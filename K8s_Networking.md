@@ -265,9 +265,35 @@ Like a **tunnel**.
 
   * slower performance
 
+**Packet Flow**
+
+    PodA
+      ↓
+    veth
+      ↓
+    cni bridge
+      ↓
+    flannel.1 (VXLAN)
+      ↓
+    encapsulation
+      ↓
+    Node network
+      ↓
+    Node2 flannel
+      ↓
+    decapsulation
+      ↓
+    bridge
+      ↓
+    PodB
+
 **11. Model 2 — Direct Routing (Calico)**
 
 Calico avoids overlays.
+
+**Direct Routing:** Calico typically uses BGP to allow routing of packets directly between pods on different nodes without encapsulation, provided they are in the same network.
+
+**Encapsulation (Overlay):** In environments where direct routing is not possible, Calico uses VXLAN or IP-in-IP to encapsulate traffic between nodes.
 
 Instead it programs **routes**.
 
@@ -294,6 +320,24 @@ No tunnels.
 **But requires:*
 
   * underlying network supports routing.
+
+**Packet Flow**
+
+    PodA
+      ↓
+    veth
+      ↓
+    host routing table
+      ↓
+    BGP route
+      ↓
+    Node network
+      ↓
+    Node2 routing table
+      ↓
+    veth
+      ↓
+    PodB
 
 **12. Model 3 — eBPF Dataplane (Cilium)**
 
@@ -328,6 +372,24 @@ So packet handling becomes **extremely efficient**.
   * built-in security
 
   * replaces kube-proxy
+
+**Packet Flow**
+
+    PodA
+      ↓
+    veth
+      ↓
+    eBPF program
+      ↓
+    policy check
+      ↓
+    routing decision
+      ↓
+    direct forwarding
+      ↓
+    Node2 eBPF
+      ↓
+    PodB
 
 **13. The Service Problem**
 
