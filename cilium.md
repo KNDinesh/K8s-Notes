@@ -25,6 +25,28 @@ Normally:
 
 => eBPF changes this by allowing small, verified programs to run in the kernel safely.
 
+    +---------------------------+
+    |        User Space         |
+    |---------------------------|
+    | Applications              |
+    | Python, Java, nginx      |
+    | CLI tools                 |
+    +-------------|-------------+
+                  |
+               System Calls
+                  |
+    +-------------v-------------+
+    |        Kernel Space       |
+    |---------------------------|
+    | Process Scheduler         |
+    | Memory Manager            |
+    | Networking Stack          |
+    | Device Drivers            |
+    | eBPF Programs             |
+    +---------------------------+
+                  |
+              Hardware
+
 **Why is this powerful?**
 
 Because the kernel is where:
