@@ -436,7 +436,7 @@ The identity is mapped to a numeric ID.
 
 **Background Components Comparison**
 
-    |**Component**| **Flannel**   |   **Calico**|  **Cilium**   |
+    |Component    | Flannel       |   Calico    |  Cilium       |
     |Agent          flanneld	      Felix	          cilium-agent
     |Routing        VXLAN overlay	  BGP	          eBPF routing
     |Policy	        none	          iptables	      eBPF
