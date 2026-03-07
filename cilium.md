@@ -4,14 +4,23 @@
 
 Normally:
 
-  * Applications run in user space
-
-        User space is like passengers on the ship. They cannot directly operate the engine; they must request services from the crew.
-
   * The kernel runs in kernel space
 
-        Kernel space is like the engine room of a ship. Only trusted engineers can enter because mistakes there can stop the entire ship.
+    => Kernel space is like the engine room of a ship. Only trusted engineers can enter because mistakes there can stop the entire ship.
 
+  * Applications run in user space
+
+    => User space is like passengers on the ship. They cannot directly operate the engine; they must request services from the crew.
+
+        Application (User Space)
+            |
+            | system call (read, write, open)
+            v
+        Kernel (Kernel Space)
+            |
+            v
+        Hardware (disk, network, CPU)
+    
 => User programs cannot normally run inside the kernel because a crash would crash the entire OS.
 
 => eBPF changes this by allowing small, verified programs to run in the kernel safely.
