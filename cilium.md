@@ -6,7 +6,11 @@ Normally:
 
   * Applications run in user space
 
+        User space is like passengers on the ship. They cannot directly operate the engine; they must request services from the crew.
+
   * The kernel runs in kernel space
+
+        Kernel space is like the engine room of a ship. Only trusted engineers can enter because mistakes there can stop the entire ship.
 
 => User programs cannot normally run inside the kernel because a crash would crash the entire OS.
 
