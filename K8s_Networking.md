@@ -436,11 +436,11 @@ The identity is mapped to a numeric ID.
 
 **Background Components Comparison**
 
-    Component	      Flannel	         Calico	     Cilium
-    Agent	          flanneld	        Felix	      cilium-agent
-    Routing	          VXLAN overlay	   BGP	        eBPF routing
-    Policy	          none	            iptables	   eBPF
-    Kernel hooks	  minimal	         iptables	   eBPF
+    Component	       Flannel	          Calico	       Cilium
+    Agent	           flanneld	         Felix	        cilium-agent
+    Routing	         VXLAN overlay	    BGP	          eBPF routing
+    Policy	          none	             iptables	     eBPF
+    Kernel hooks	    minimal	          iptables	     eBPF
 
 **13. The Service Problem**
 
