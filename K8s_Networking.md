@@ -389,6 +389,23 @@ Small programs running inside the Linux kernel.
 
 So packet handling becomes **extremely efficient**.
 
+**Policy enforcement**
+
+**Instead of IP rules:*
+
+Cilium uses identity-based security.
+
+**Example:*
+
+    pod label: frontend
+    pod label: backend
+
+**Policy:*
+
+    frontend → backend allowed
+
+The identity is mapped to a numeric ID.
+
 **Benefits:*
 
   * faster than iptables
