@@ -297,6 +297,18 @@ Calico avoids overlays.
 
 Instead it programs **routes**.
 
+**Components**
+
+**Running on every node:*
+
+  * Felix agent
+
+  * BIRD BGP daemon
+
+  * iptables rules
+
+Felix configures the Linux networking.
+
 **Example:*
 
     Node1 routing table
@@ -308,6 +320,20 @@ Instead it programs **routes**.
     PodA → Node1 → Node2 → PodB
 
 No tunnels.
+
+**Network policy enforcement**
+
+**Calico uses:*
+
+    iptables chains
+
+**Example path:*
+
+    Pod → iptables filter → routing → forward
+
+**Felix installs rules like:*
+
+    allow namespaceA → namespaceB
 
 **Benefits:*
 
