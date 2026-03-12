@@ -226,25 +226,25 @@ The kubelet continuously watches the **kube-apiserver** for Pods scheduled to it
 
 **Core Workflow**
 
-Kubelet registers the node with the **kube-apiserver** when it starts.
+  1. Kubelet registers the node with the **kube-apiserver** when it starts.
 
-It continuously watches the API server for Pods assigned to its node.
+  2. It continuously watches the API server for Pods assigned to its node.
 
-Pod specifications are received through the kubelet **Pod configuration sources**.
+  3. Pod specifications are received through the kubelet **Pod configuration sources**.
 
-The kubelet adds Pods to its **Pod worker queue**.
+  4. The kubelet adds Pods to its **Pod worker queue**.
 
-Pod workers process Pods through synchronization loops.
+  5. Pod workers process Pods through synchronization loops.
 
-Kubelet interacts with the container runtime via the **Container Runtime Interface (CRI)**.
+  6. Kubelet interacts with the container runtime via the **Container Runtime Interface (CRI)**.
 
-The container runtime pulls container images and creates containers.
+  7. The container runtime pulls container images and creates containers.
 
-Kubelet monitors container health through probes.
+  8. Kubelet monitors container health through probes.
 
-Node and Pod status are periodically reported back to the API server.
+  9. Node and Pod status are periodically reported back to the API server.
 
-Cluster state updates are stored in **etcd**.
+  10. Cluster state updates are stored in **etcd**.
 
 **Internal Architecture**
 
@@ -287,3 +287,70 @@ Cluster state updates are stored in **etcd**.
                                          │
                                          ▼
                                         etcd
+
+**Container Runtime Interface:**
+
+The **Container Runtime** is the component in **Kubernetes** responsible for **running containers on a node**. It pulls container images, creates containers, starts and stops them, and manages their lifecycle.
+
+The runtime interacts with the **Kubelet** through the **Container Runtime Interface (CRI)**, allowing Kubernetes to support multiple container runtimes such as **containerd** and **CRI-O**.
+
+**Core Workflow**
+
+  1. The **Kubelet** receives Pod specifications from the **kube-apiserver**.
+
+  2. Kubelet sends container lifecycle requests to the runtime through the **Container Runtime Interface**.
+
+  3. The runtime pulls required container images from container registries.
+
+  4. Images are unpacked and stored locally.
+
+  5. The runtime creates a container using the image and configuration.
+
+  6. The container is started using the low-level runtime.
+
+  7. Networking and storage are attached to the container.
+
+  8. The runtime monitors container status.
+
+  9. Container status is returned to **Kubelet**, which updates the API server.
+
+  10. Cluster state updates are stored in **etcd**.
+
+**Internal Architecture:**
+
+                                   Container Runtime
+                               ──────────────────────────
+                                   CRI gRPC Server
+                                        │
+                                        ▼
+                               Container Runtime Engine
+                              (containerd / CRI-O runtime)
+                                        │
+                                        ▼
+                                  Image Management
+                             (Pull / Store / Remove Images)
+                                        │
+                                        ▼
+                                 Container Management
+                             (Create / Start / Stop Pods)
+                                        │
+                                        ▼
+                                   Runtime Shim
+                               (Runtime Isolation Layer)
+                                        │
+                                        ▼
+                               Low-Level OCI Runtime
+                                   (runc execution)
+                                        │
+                                        ▼
+                                 Linux Kernel Features
+                         (Namespaces / cgroups / filesystem)
+                                        │
+                                        ▼
+                                   Running Containers
+                                        │
+                                        ▼
+                                    Status Feedback
+                                        │
+                                        ▼
+                                      Kubelet
