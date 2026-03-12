@@ -103,3 +103,48 @@ It ensures that all cluster state is **reliably stored, replicated, and synchron
                               │
                               ▼
                        Client Notifications
+
+**Controller Manager**
+
+The **Kubernetes Controller Manager** runs a collection of controllers that continuously monitor resources in Kubernetes and reconcile differences between the desired state and the actual cluster state.
+
+Core Workflow
+
+Controllers watch resources through the **Kubernetes API Server** using informers.
+
+Resource changes trigger events added to controller work queues.
+
+Controllers process queue items through reconciliation loops.
+
+The controller compares desired and actual state.
+
+If a difference exists, the controller updates the API server.
+
+The API server persists changes in **etcd**.
+
+Updated state triggers new watch events.
+
+**Internal Architecture**
+
+                             Kubernetes Controller Manager
+                         ─────────────────────────────────────
+                                 Controller Factory
+                                        │
+                                        ▼
+                              Shared Informer Cache
+                                        │
+                        ┌───────────────┼───────────────┐
+                        ▼               ▼               ▼
+                  ReplicaSet Ctrl   Node Ctrl      Job Ctrl
+                        │               │               │
+                        ▼               ▼               ▼
+                      Work Queue      Work Queue      Work Queue
+                        │
+                        ▼
+                   Reconciliation Logic
+                        │
+                        ▼
+                   Update API Server
+                        │
+                        ▼
+                        etcd
