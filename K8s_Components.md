@@ -177,7 +177,7 @@ It continuously watches the **kube-apiserver** for Pods that do not yet have a n
 
   10. The **Kubelet** on the selected node receives the Pod and starts the containers.
 
-**Internal Architecture:**
+**Internal Architecture**
 
                                  Kubernetes Scheduler
                              ───────────────────────────────
@@ -288,7 +288,7 @@ The kubelet continuously watches the **kube-apiserver** for Pods scheduled to it
                                          ▼
                                         etcd
 
-**Container Runtime Interface:**
+**Container Runtime Interface**
 
 The **Container Runtime** is the component in **Kubernetes** responsible for **running containers on a node**. It pulls container images, creates containers, starts and stops them, and manages their lifecycle.
 
@@ -316,7 +316,7 @@ The runtime interacts with the **Kubelet** through the **Container Runtime Inter
 
   10. Cluster state updates are stored in **etcd**.
 
-**Internal Architecture:**
+**Internal Architecture**
 
                                    Container Runtime
                                ──────────────────────────
@@ -354,3 +354,68 @@ The runtime interacts with the **Kubelet** through the **Container Runtime Inter
                                         │
                                         ▼
                                       Kubelet
+
+**Kube-Proxy**
+
+kube-proxy is a network component in **Kubernetes** that runs on every node and manages **network communication for Services**.
+
+It maintains network rules that allow Pods to communicate with other Pods and Services inside the cluster by implementing **Service abstraction and load balancing**.
+
+Kube-proxy watches the **kube-apiserver** for changes to Services and Endpoints and updates node-level network rules accordingly.
+
+**Core Workflow**
+
+  1. Kube-proxy starts on each node and connects to the **kube-apiserver**.
+
+  2. It watches for **Service and Endpoint updates** through the API server.
+
+  3. Service and endpoint changes trigger events.
+
+  4. Events are processed through kube-proxy's internal synchronization loop.
+
+  5. Kube-proxy generates network rules based on the Service configuration.
+
+  6. Rules are programmed into the node’s networking layer (such as **iptables**, **IPVS**, or **nftables**).
+
+  7. Incoming traffic to a Service IP is redirected to one of the backend Pods.
+
+  8. Load balancing is performed across available Pod endpoints.
+
+  9. Network rules are periodically synchronized with the cluster state.
+
+**Internal Architecture**
+
+                                         kube-proxy
+                                 ──────────────────────────
+                                      API Server Watch
+                                 (Services / Endpoints)
+                                             │
+                                             ▼
+                                      Informer Cache
+                                             │
+                                             ▼
+                                    Event Processing
+                                             │
+                                             ▼
+                                      Sync Loop
+                               (Service & Endpoint Sync)
+                                             │
+                        ┌────────────────────┼────────────────────┐
+                        ▼                    ▼                    ▼
+                    Service Map         Endpoint Map         Node Info
+                        │                    │                    │
+                        ▼                    ▼                    ▼
+                                 Network Rule Generation
+                                             │
+                                             ▼
+                                     Proxy Mode Engine
+                              (iptables / IPVS / nftables)
+                                             │
+                                             ▼
+                                      Kernel Network Stack
+                                             │
+                                             ▼
+                                   Traffic Routing Rules
+                                             │
+                                             ▼
+                                     Pod Load Balancing
