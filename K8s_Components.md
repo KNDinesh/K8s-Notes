@@ -2,18 +2,6 @@
 
   1. Receives REST request
 
-  The client (kubectl) sends an HTTPS request to the API server.
-
-        POST /api/v1/namespaces/default/pods
-
-  Key details:
-
-  * JSON/YAML request body
-
-  * Auth credentials (token, cert, etc.)
-
-  * TLS encrypted
-
   2. Authenticates user
 
   3. Authorizes permissions
