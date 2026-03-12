@@ -151,55 +151,69 @@ The **Kubernetes Controller Manager** runs a collection of controllers that cont
 
 **Kubernetes Scheduler**
 
-The **Kubernetes Scheduler** continuously watches the **API server** for Pods that **do not yet have a Node assigned** (spec.nodeName is empty).
+The **Kubernetes Scheduler** is a control-plane component in **Kubernetes** responsible for assigning **unscheduled Pods to the most appropriate Node** in the cluster.
 
-Its main job is to:
+It continuously watches the **kube-apiserver** for Pods that do not yet have a node assigned and selects a node based on resource availability, constraints, and scheduling policies.
 
-  1. Detect unscheduled Pods
+**Core Workflow**
 
-  2. Find suitable Nodes
+  1. The scheduler watches for Pods without a **nodeName** through the Kubernetes API Server.
 
-  3. Score the candidate Nodes
+  2. Unscheduled Pods are added to the scheduler **internal scheduling queue**.
 
-  4. Bind the Pod to the best Node
+  3. The scheduler starts the **scheduling cycle** to evaluate cluster nodes.
 
-The scheduler **does not run Pods** itself. It only **decides placement**.
+  4. Nodes that cannot run the Pod are eliminated through filtering.
 
-Actual Pod execution is done by **Kubelet** on the chosen node.
+  5. Remaining nodes are **scored and ranked** using scheduling policies.
+
+  6. The node with the highest score is selected.
+
+  7. The scheduler enters the **binding cycle**.
+
+  8. The scheduler updates the Pod with the selected node through the API server.
+
+  9. The API server stores the updated Pod state in **etcd**.
+
+  10. The **Kubelet** on the selected node receives the Pod and starts the containers.
 
 **Internal Architecture:**
 
-                        +----------------------+
-                        |   API Server Watch   |
-                        +----------+-----------+
-                                   |
-                                   v
-                        +----------------------+
-                        |     Scheduling Queue |
-                        +----------+-----------+
-                                   |
-                                   v
-                        +----------------------+
-                        |   Scheduling Cycle   |
-                        |----------------------|
-                        | 1. PreFilter         |
-                        | 2. Filter            |
-                        | 3. PostFilter        |
-                        | 4. PreScore          |
-                        | 5. Score             |
-                        | 6. NormalizeScore    |
-                        | 7. Reserve           |
-                        | 8. Permit            |
-                        +----------+-----------+
-                                   |
-                                   v
-                        +----------------------+
-                        |    Binding Cycle     |
-                        |----------------------|
-                        | 1. PreBind           |
-                        | 2. Bind              |
-                        | 3. PostBind          |
-                        +----------+-----------+
-                                   |
-                                   v
-                               Node Assigned
+                                 Kubernetes Scheduler
+                             ───────────────────────────────
+                                   API Server Watch
+                                          │
+                                          ▼
+                                  Scheduling Queue
+                        (Active Queue / Backoff / Unschedulable)
+                                          │
+                                          ▼
+                                  Scheduling Cycle
+                                          │
+                 ┌───────────────┬───────────────┬───────────────┐
+                 ▼               ▼               ▼
+              PreFilter        Filter          PostFilter
+          (validate pod)   (remove nodes)   (handle failures)
+                                          │
+                                          ▼
+                                 Node Candidate List
+                                          │
+                                          ▼
+                                    Scoring Phase
+                             (PreScore → Score → Normalize)
+                                          │
+                                          ▼
+                                   Select Best Node
+                                          │
+                                          ▼
+                                   Binding Cycle
+                             (PreBind → Bind → PostBind)
+                                          │
+                                          ▼
+                                   Update API Server
+                                          │
+                                          ▼
+                                          etcd
+                                          │
+                                          ▼
+                                  Kubelet Starts Pod
