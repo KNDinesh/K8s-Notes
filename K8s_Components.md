@@ -148,3 +148,58 @@ The **Kubernetes Controller Manager** runs a collection of controllers that cont
                         │
                         ▼
                         etcd
+
+**Kubernetes Scheduler**
+
+The **Kubernetes Scheduler** continuously watches the **API server** for Pods that **do not yet have a Node assigned** (spec.nodeName is empty).
+
+Its main job is to:
+
+  1. Detect unscheduled Pods
+
+  2. Find suitable Nodes
+
+  3. Score the candidate Nodes
+
+  4. Bind the Pod to the best Node
+
+The scheduler **does not run Pods** itself. It only **decides placement**.
+
+Actual Pod execution is done by **Kubelet** on the chosen node.
+
+**Internal Architecture:**
+
+                        +----------------------+
+                        |   API Server Watch   |
+                        +----------+-----------+
+                                   |
+                                   v
+                        +----------------------+
+                        |     Scheduling Queue |
+                        +----------+-----------+
+                                   |
+                                   v
+                        +----------------------+
+                        |   Scheduling Cycle   |
+                        |----------------------|
+                        | 1. PreFilter         |
+                        | 2. Filter            |
+                        | 3. PostFilter        |
+                        | 4. PreScore          |
+                        | 5. Score             |
+                        | 6. NormalizeScore    |
+                        | 7. Reserve           |
+                        | 8. Permit            |
+                        +----------+-----------+
+                                   |
+                                   v
+                        +----------------------+
+                        |    Binding Cycle     |
+                        |----------------------|
+                        | 1. PreBind           |
+                        | 2. Bind              |
+                        | 3. PostBind          |
+                        +----------+-----------+
+                                   |
+                                   v
+                               Node Assigned
