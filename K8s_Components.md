@@ -218,6 +218,58 @@ It continuously watches the **kube-apiserver** for Pods that do not yet have a n
                                           ▼
                                   Kubelet Starts Pod
 
+**Cloud Controller Manager**
+
+The **Cloud Controller Manager** is a control-plane component in **Kubernetes** that allows Kubernetes to integrate with **external cloud provider APIs**.
+
+It runs controllers that manage cloud-specific resources such as load balancers, storage volumes, and node lifecycle, without requiring cloud-specific code in the main **kube-controller-manager**.
+
+**Core Workflow**
+
+The Cloud Controller Manager watches the **kube-apiserver** for resources that require cloud provider interactions.
+
+Controllers maintain **cloud resources** to match the desired state of Kubernetes objects.
+
+Changes to cloud-dependent resources trigger events in the controller work queue.
+
+Controllers process each event through a **reconciliation loop**.
+
+The controller compares the desired state (from Kubernetes API objects) with the actual state in the cloud provider.
+
+If discrepancies exist, the controller makes API calls to the cloud provider to **create, update, or delete resources**.
+
+The controller updates the Kubernetes API server with the latest resource status.
+
+Cluster state is persisted in **etcd**.
+
+**Internal Architecture**
+
+                                 Cloud Controller Manager
+                                 ─────────────────────────────
+                                      Controller Factory
+                                             │
+                                             ▼
+                                   Shared Informer Cache
+                                             │
+                        ┌─────────────┬─────────────┬─────────────┐
+                        ▼             ▼             ▼
+                 Node Controller  Route Controller  Service Controller
+                        │             │             │
+                        ▼             ▼             ▼
+                     Work Queue     Work Queue     Work Queue
+                        │
+                        ▼
+                   Reconciliation Logic
+                        │
+                        ▼
+                  Cloud Provider API
+                        │
+                        ▼
+                   Update API Server
+                        │
+                        ▼
+                         etcd
+
 **Kubelet**
 
 The Kubelet is the primary node agent in **Kubernetes** that runs on every worker node. It ensures that containers described in Pod specifications are running and healthy.
