@@ -217,3 +217,73 @@ It continuously watches the **kube-apiserver** for Pods that do not yet have a n
                                           │
                                           ▼
                                   Kubelet Starts Pod
+
+**Kubelet**
+
+The Kubelet is the primary node agent in **Kubernetes** that runs on every worker node. It ensures that containers described in Pod specifications are running and healthy.
+
+The kubelet continuously watches the **kube-apiserver** for Pods scheduled to its node and manages container lifecycle through the container runtime.
+
+**Core Workflow**
+
+Kubelet registers the node with the **kube-apiserver** when it starts.
+
+It continuously watches the API server for Pods assigned to its node.
+
+Pod specifications are received through the kubelet **Pod configuration sources**.
+
+The kubelet adds Pods to its **Pod worker queue**.
+
+Pod workers process Pods through synchronization loops.
+
+Kubelet interacts with the container runtime via the **Container Runtime Interface (CRI)**.
+
+The container runtime pulls container images and creates containers.
+
+Kubelet monitors container health through probes.
+
+Node and Pod status are periodically reported back to the API server.
+
+Cluster state updates are stored in **etcd**.
+
+**Internal Architecture**
+
+                                     Kubelet
+                             ──────────────────────────
+                                  Node Registration
+                                         │
+                                         ▼
+                                  API Server Watch
+                                         │
+                                         ▼
+                                 Pod Configuration
+                       (API Server / File / HTTP Sources)
+                                         │
+                                         ▼
+                                   Pod Workers
+                                (Sync Pod Loop)
+                                         │
+                    ┌────────────────────┼────────────────────┐
+                    ▼                    ▼                    ▼
+               Volume Manager       Network Manager      Secret Manager
+                    │                    │                    │
+                    ▼                    ▼                    ▼
+                                 Container Runtime
+                           (via Container Runtime Interface)
+                                         │
+                                         ▼
+                                 Container Lifecycle
+                           (Create / Start / Stop Containers)
+                                         │
+                                         ▼
+                                 Health Monitoring
+                            (Liveness / Readiness Probes)
+                                         │
+                                         ▼
+                                  Status Manager
+                                         │
+                                         ▼
+                                 Update API Server
+                                         │
+                                         ▼
+                                        etcd
