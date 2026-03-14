@@ -226,21 +226,21 @@ It runs controllers that manage cloud-specific resources such as load balancers,
 
 **Core Workflow**
 
-The Cloud Controller Manager watches the **kube-apiserver** for resources that require cloud provider interactions.
+  1. The Cloud Controller Manager watches the **kube-apiserver** for resources that require cloud provider interactions.
 
-Controllers maintain **cloud resources** to match the desired state of Kubernetes objects.
+  2. Controllers maintain **cloud resources** to match the desired state of Kubernetes objects.
 
-Changes to cloud-dependent resources trigger events in the controller work queue.
+  3. Changes to cloud-dependent resources trigger events in the controller work queue.
 
-Controllers process each event through a **reconciliation loop**.
+  4. Controllers process each event through a **reconciliation loop**.
 
-The controller compares the desired state (from Kubernetes API objects) with the actual state in the cloud provider.
+  5. The controller compares the desired state (from Kubernetes API objects) with the actual state in the cloud provider.
 
-If discrepancies exist, the controller makes API calls to the cloud provider to **create, update, or delete resources**.
+  6. If discrepancies exist, the controller makes API calls to the cloud provider to **create, update, or delete resources**.
 
-The controller updates the Kubernetes API server with the latest resource status.
+  7. The controller updates the Kubernetes API server with the latest resource status.
 
-Cluster state is persisted in **etcd**.
+  8. Cluster state is persisted in **etcd**.
 
 **Internal Architecture**
 
