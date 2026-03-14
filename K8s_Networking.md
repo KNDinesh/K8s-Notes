@@ -1,10 +1,10 @@
 **1. The First Principle: Kubernetes Does NOT Invent Networking**
 
-**One misconception:* Kubernetes has its own networking stack.
+*One misconception:* Kubernetes has its own networking stack.
 
 It doesn’t.
 
-**Everything ultimately relies on the Linux kernel:*
+*Everything ultimately relies on the Linux kernel:*
 
   * Network namespaces
 
@@ -18,7 +18,7 @@ It doesn’t.
 
 Kubernetes simply orchestrates these automatically.
 
-**Think of Kubernetes networking as:*
+*Think of Kubernetes networking as:*
 
     Linux networking primitives
             +
@@ -36,7 +36,7 @@ Not the container.
 
 **Why?**
 
-**Because containers inside a pod share:*
+*Because containers inside a pod share:*
 
   * same network namespace
 
@@ -44,13 +44,13 @@ Not the container.
 
   * same port space
 
-**Example:*
+*Example:*
 
     Pod
      ├── Container A (nginx)
      └── Container B (sidecar)
 
-**Both containers see:*
+*Both containers see:*
 
     localhost:80
 
@@ -64,7 +64,7 @@ The real mechanism behind pods is the Linux concept:
 
 **Network Namespace**
 
-**Each namespace gets its own:*
+*Each namespace gets its own:*
 
   * IP address
 
@@ -74,7 +74,7 @@ The real mechanism behind pods is the Linux concept:
 
   * iptables rules
 
-**Example:*
+*Example:*
 
     Host Network Namespace
        ├── Pod Namespace 1
@@ -85,7 +85,7 @@ Each pod believes it is running on **its own machine**.
 
 **4. Connecting Pods to the Host (veth pair)**
 
-**Now the real question:*
+*Now the real question:*
 
 **How does a pod connect to the host network?**
 
@@ -121,7 +121,7 @@ When many pods run on a node, Kubernetes typically connects them through a Linux
 
 Think of a **bridge as a virtual switch**.
 
-**So:*
+*So:*
 
     Pod → veth → bridge → host network
 
@@ -141,7 +141,7 @@ Pods must communicate **without NAT**
 
 Any pod can talk to any other pod.
 
-**This is called:*
+*This is called:*
 
 **Flat Pod Network**
 
@@ -155,13 +155,13 @@ That’s where **CNI plugins come in**.
 
 **7. The Role of the CNI (Container Network Interface)**
 
-**Kubernetes simply says:*
+*Kubernetes simply says:*
 
     “Hey CNI, a new pod started. Give it networking.”
 
 The **CNI plugin does everything else**.
 
-**Responsibilities include:*
+*Responsibilities include:*
 
   * Assign Pod IP
 
@@ -175,7 +175,7 @@ The **CNI plugin does everything else**.
 
   * Handle cross-node routing
 
-**Popular CNIs include:*
+*Popular CNIs include:*
 
   * Calico
 
@@ -211,7 +211,7 @@ Latency is extremely low.
 
 Now it gets interesting.
 
-**Example:*
+*Example:*
 
     Node1
       PodA 10.244.1.3
@@ -219,7 +219,7 @@ Now it gets interesting.
     Node2
       PodB 10.244.2.7
 
-**Node1 must know:*
+*Node1 must know:*
 
     “Packets for 10.244.2.0/24 should go to Node2.”
 
@@ -229,17 +229,17 @@ There are two ways CNIs solve this.
 
 Overlay networking creates a virtual network on top of another network.
 
-**Technology used:*
+*Technology used:*
 
 **VXLAN**
 
-**Packet transformation:*
+*Packet transformation:*
 
     Original packet
     PodA → PodB
     10.244.1.3 → 10.244.2.7
 
-**Flannel wraps it inside another packet:*
+*Flannel wraps it inside another packet:*
 
     Node1IP → Node2IP
 
@@ -253,13 +253,13 @@ Like a **tunnel**.
       |
     PodB
 
-**Advantages:*
+*Advantages:*
 
   * Works anywhere
 
   * No routing requirements
 
-**Disadvantages:*
+*Disadvantages:*
 
   * **encapsulation overhead**
 
@@ -299,7 +299,7 @@ Instead it programs **routes**.
 
 **Components**
 
-**Running on every node:*
+*Running on every node:*
 
   * Felix agent
 
@@ -309,13 +309,13 @@ Instead it programs **routes**.
 
 Felix configures the Linux networking.
 
-**Example:*
+*Example:*
 
     Node1 routing table
     
     10.244.2.0/24 → Node2
 
-**Traffic flow:*
+*Traffic flow:*
 
     PodA → Node1 → Node2 → PodB
 
@@ -323,19 +323,19 @@ No tunnels.
 
 **Network policy enforcement**
 
-**Calico uses:*
+*Calico uses:*
 
     iptables chains
 
-**Example path:*
+*Example path:*
 
     Pod → iptables filter → routing → forward
 
-**Felix installs rules like:*
+*Felix installs rules like:*
 
     allow namespaceA → namespaceB
 
-**Benefits:*
+*Benefits:*
 
   * Faster
 
@@ -343,7 +343,7 @@ No tunnels.
 
   * Less CPU overhead
 
-**But requires:*
+*But requires:*
 
   * underlying network supports routing.
 
@@ -375,11 +375,11 @@ Instead of relying on **iptables**, it uses **eBPF**.
 
 Small programs running inside the Linux kernel.
 
-**Think of it like:*
+*Think of it like:*
 
     programmable packet processing.
 
-**Cilium attaches logic directly to:*
+*Cilium attaches logic directly to:*
 
   * socket layer
 
@@ -391,7 +391,7 @@ So packet handling becomes **extremely efficient**.
 
 **Policy enforcement**
 
-**Instead of IP rules:*
+*Instead of IP rules:*
 
 Cilium uses identity-based security.
 
@@ -400,13 +400,13 @@ Cilium uses identity-based security.
     pod label: frontend
     pod label: backend
 
-**Policy:*
+*Policy:*
 
     frontend → backend allowed
 
 The identity is mapped to a numeric ID.
 
-**Benefits:*
+*Benefits:*
 
   * faster than iptables
 
@@ -446,13 +446,13 @@ The identity is mapped to a numeric ID.
 
 Pods are **ephemeral**.
 
-**Example:*
+*Example:*
 
     PodA → PodB (10.244.1.9)
 
 PodB dies.
 
-**New pod appears:*
+*New pod appears:*
 
     PodB → 10.244.3.12
 
@@ -462,12 +462,12 @@ Kubernetes solves this with **Services**.
 
 **14. Service = Stable Virtual IP**
 
-**A service provides a stable address:*
+*A service provides a stable address:*
 
     Service IP
     10.96.0.25
 
-**Behind it:*
+*Behind it:*
 
     Pod1
     Pod2
@@ -477,17 +477,17 @@ Service acts like a **load balancer**.
 
 **15. kube-proxy: The Traffic Manager**
 
-**Every node runs:*
+*Every node runs:*
 
 **kube-proxy**
 
-**It creates rules like:*
+*It creates rules like:*
 
     10.96.0.25 → Pod1
     10.96.0.25 → Pod2
     10.96.0.25 → Pod3
 
-**Traditionally implemented using:*
+*Traditionally implemented using:*
 
   * iptables
 
@@ -501,7 +501,7 @@ Cilium can replace kube-proxy entirely.
 
 External users cannot reach pod IPs.
 
-**Instead they hit:*
+*Instead they hit:*
 
     Load Balancer
          |
@@ -523,13 +523,13 @@ They translate HTTP requests into internal service calls.
 
 **17. Network Policies (Security)**
 
-**Without policies:*
+*Without policies:*
 
     Every pod can talk to every pod
 
 Which is dangerous.
 
-**CNI plugins enforce rules like:*
+*CNI plugins enforce rules like:*
 
     Only frontend pods → backend pods
 
@@ -537,9 +537,9 @@ Calico and Cilium implement these efficiently.
 
 **18. Observability**
 
-**Troubleshooting Kubernetes networking requires container-aware tools:*
+*Troubleshooting Kubernetes networking requires container-aware tools:*
 
-**Examples:*
+*Examples:*
 
   * tcpdump
 
@@ -555,7 +555,7 @@ Because traditional VM metrics show **only node traffic**, not **pod traffic**.
 
 **19. Putting It All Together**
 
-**Full request path:*
+*Full request path:*
 
     User Request
          |
@@ -571,7 +571,7 @@ Because traditional VM metrics show **only node traffic**, not **pod traffic**.
          |
     Container
 
-**And underneath:*
+*And underneath:*
 
     Container
       ↓
@@ -593,11 +593,11 @@ Everything is still **Linux networking primitives**.
 
 **20. What Most Beginners Miss**
 
-**Three realities most tutorials hide:*
+*Three realities most tutorials hide:*
 
 **1. Kubernetes networking is mostly Linux networking.**
 
-**If you don't understand:*
+*If you don't understand:*
 
   * namespaces
 
@@ -611,7 +611,7 @@ you'll struggle later.
 
 **2. CNI choice affects everything**
 
-**Different CNIs change:*
+*Different CNIs change:*
 
   * performance
 
@@ -623,7 +623,7 @@ you'll struggle later.
 
 **3. eBPF is the future**
 
-**Most large clusters are moving toward:*
+*Most large clusters are moving toward:*
 
   * Cilium
 
@@ -633,7 +633,7 @@ you'll struggle later.
 
 **If You Want to Truly Master Kubernetes Networking**
 
-**You should study in this exact order:*
+*You should study in this exact order:*
 
   1. Linux namespaces
 
