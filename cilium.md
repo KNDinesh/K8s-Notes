@@ -49,7 +49,7 @@ Normally:
 
 **Why is this powerful?**
 
-Because the kernel is where:
+*Because the kernel is where:*
 
   * networking
 
@@ -87,7 +87,7 @@ But the robot is strictly verified before entering.
 
 Before an eBPF program runs, the eBPF Verifier checks it.
 
-**The verifier ensures the program:*
+*The verifier ensures the program:*
 
 **1. Cannot run forever**
 
@@ -110,7 +110,7 @@ The program cannot:
 
 **3. Cannot crash the kernel**
 
-**The verifier ensures:*
+*The verifier ensures:*
 
   * safe memory access
 
@@ -124,7 +124,7 @@ Only verified programs are allowed into the kernel.
 
 Cilium is a cloud-native networking, security, and observability platform for Kubernetes that uses eBPF.
 
-**It replaces traditional networking tools like:*
+*It replaces traditional networking tools like:*
 
   * iptables
 
@@ -140,15 +140,15 @@ It is widely used in Kubernetes clusters.
 
 Yes — mostly true.
 
-**Traditional networking:*
+*Traditional networking:*
 
     Pod → iptables rules → kernel routing → destination
 
-**Cilium:*
+*Cilium:*
 
     Pod → eBPF program in kernel → destination
 
-**Because eBPF runs inside the kernel, it avoids:*
+*Because eBPF runs inside the kernel, it avoids:*
 
   * multiple rule traversals
 
@@ -156,7 +156,7 @@ Yes — mostly true.
 
   * large iptables rule chains
 
-**So networking is:*
+*So networking is:*
 
   * faster
 
@@ -168,11 +168,11 @@ That’s what people mean by “native kernel speed.”
 
 **5. How Cilium Works (Step-by-Step)**
 
-**Step 1 — Kubernetes creates a Pod*
+*Step 1 — Kubernetes creates a Pod*
 
 The Kubelet runs on every Kubernetes node.
 
-**When a Pod is scheduled:*
+*When a Pod is scheduled:*
 
     Scheduler → Node
                → Kubelet
@@ -181,11 +181,11 @@ Kubelet creates the container.
 
 But the container needs networking.
 
-**Step 2 — Kubelet calls the CNI plugin*
+*Step 2 — Kubelet calls the CNI plugin*
 
 Kubernetes networking uses Container Network Interface (CNI) plugins.
 
-**Examples:*
+*Examples:*
 
   * Flannel
 
@@ -193,11 +193,11 @@ Kubernetes networking uses Container Network Interface (CNI) plugins.
 
   * Cilium
 
-**Kubelet asks Cilium:*
+*Kubelet asks Cilium:*
 
 "Give networking to this Pod."
 
-**Cilium then:*
+*Cilium then:*
 
   * creates virtual network interface
 
@@ -205,11 +205,11 @@ Kubernetes networking uses Container Network Interface (CNI) plugins.
 
   * connects Pod to cluster network
 
-**Step 3 — Cilium assigns an Identity*
+*Step 3 — Cilium assigns an Identity*
 
 Cilium assigns every workload a security identity.
 
-**Example:*
+*Example:*
 
     frontend pod → ID 1001
     backend pod → ID 1002
@@ -219,7 +219,7 @@ Policies can then reference identities instead of IP addresses.
 
 This solves a big Kubernetes problem because pod IPs constantly change.
 
-**Step 4 — Cilium attaches an eBPF program*
+*Step 4 — Cilium attaches an eBPF program*
 
   * Cilium attaches an eBPF program to the Pod's network namespace.
 
@@ -227,7 +227,7 @@ This solves a big Kubernetes problem because pod IPs constantly change.
 
 **It can observe events like:**
 
-**Example events:*
+*Example events:*
 
     Pod A → opened TCP socket
     Pod A → sending packet to Pod B
@@ -238,11 +238,11 @@ This enables observability.
 
 **Why Observability becomes powerful**
 
-**Traditional networking tools show:*
+*Traditional networking tools show:*
 
     IP → IP
 
-**Cilium can show:*
+*Cilium can show:*
 
     Pod → Pod
     Process → Destination
@@ -254,7 +254,7 @@ Because it observes traffic at kernel level.
 
 Cilium can enforce security policies using eBPF.
 
-**Example policy:*
+*Example policy:*
 
     frontend → backend : allowed
     frontend → database : denied
@@ -263,15 +263,15 @@ Every packet triggers eBPF evaluation.
 
 Packet vs Session (important concept)
 
-**Traditional firewall:*
+*Traditional firewall:*
 
     Evaluate connection session
 
-**Cilium:*
+*Cilium:*
 
     Evaluate each packet
 
-**Example:*
+*Example:*
 
   * HTTP request contains multiple packets.
 
@@ -281,11 +281,11 @@ Packet vs Session (important concept)
 
 **7. Socket Layer Load Balancing**
 
-**Traditional Kubernetes networking:*
+*Traditional Kubernetes networking:*
 
     Pod → Node → iptables → Pod
 
-**iptables must:*
+*iptables must:*
 
   * evaluate thousands of rules
 
@@ -293,19 +293,19 @@ Packet vs Session (important concept)
 
 This slows down large clusters.
 
-**With Cilium:*
+*With Cilium:*
 
     Pod → eBPF → Pod
 
 Load balancing happens at the socket layer inside kernel.
 
-**This avoids:*
+*This avoids:*
 
   * iptables
 
   * extra hops
 
-**Result:*
+*Result:*
 
   * faster communication
 
@@ -315,13 +315,13 @@ Load balancing happens at the socket layer inside kernel.
 
 Normally Kubernetes uses kube-proxy.
 
-**kube-proxy implements services like:*
+*kube-proxy implements services like:*
 
   * ClusterIP
 
   * NodePort
 
-**It does this using:*
+*It does this using:*
 
   * iptables
 
@@ -329,7 +329,7 @@ Normally Kubernetes uses kube-proxy.
 
 Problem:
 
-**In large clusters:*
+*In large clusters:*
 
     Thousands of services
     → thousands of rules
@@ -343,15 +343,15 @@ Cilium implements service routing using eBPF maps.
 
 **Advantages:**
 
-**Lower CPU*
+*Lower CPU*
 
 No massive iptables rule chains.
 
-**Zero convergence time*
+*Zero convergence time*
 
 Updating a map entry is instant.
 
-**Atomic updates*
+*Atomic updates*
 
 Changes happen instantly without rebuilding rule chains.
 
@@ -359,17 +359,17 @@ Changes happen instantly without rebuilding rule chains.
 
 **Cilium can also handle:**
 
-**Load Balancing*
+*Load Balancing*
 
 Internal and external traffic balancing.
 
 **BGP Support**
 
-**Border Gateway Protocol*
+*Border Gateway Protocol*
 
 Used by routers to advertise networks.
 
-**Example:*
+*Example:*
 
     Kubernetes Service IP
     → advertised to data center routers
@@ -384,7 +384,7 @@ Modern networking support.
 
 Control outbound traffic from pods.
 
-**Example:*
+*Example:*
 
     Pod → Internet
 
@@ -394,7 +394,7 @@ Cilium can route it through an egress node.
 
 **10. Cilium as a Service Mesh**
 
-**Traditional service meshes:*
+*Traditional service meshes:*
 
   * Istio
 
@@ -402,7 +402,7 @@ Cilium can route it through an egress node.
 
 These use sidecar proxies.
 
-**Example:*
+*Example:*
 
     Pod
      ├ app container
@@ -410,7 +410,7 @@ These use sidecar proxies.
 
 Every request goes through the proxy.
 
-**Problems:*
+*Problems:*
 
   * extra CPU
 
@@ -422,15 +422,15 @@ Every request goes through the proxy.
 
 Cilium moves the logic into eBPF in the kernel.
 
-**So instead of:*
+*So instead of:*
 
     Pod → proxy → network
 
-**You get:*
+*You get:*
 
     Pod → kernel eBPF → network
 
-**Result:*
+*Result:*
 
   * faster
 
@@ -446,7 +446,7 @@ Cilium supports two types.
 
 **1. Node-to-Node encryption**
 
-**Using:*
+*Using:*
 
   * WireGuard
 
@@ -454,7 +454,7 @@ Cilium supports two types.
 
 Traffic between nodes is encrypted.
 
-**Example:*
+*Example:*
 
     Node A → Node B
 
@@ -464,13 +464,13 @@ All pod traffic between them is encrypted automatically.
 
 This is similar to mTLS.
 
-**mTLS normally does:*
+*mTLS normally does:*
 
     Authentication + Encryption
 
 Cilium can separate these two.
 
-**Benefits:*
+*Benefits:*
 
   * works for more protocols
 
@@ -482,12 +482,12 @@ Cilium supports the Kubernetes Gateway API.
 
 **Example:**
 
-**You want:*
+*You want:*
 
     90% traffic → v1
     10% traffic → v2
 
-**This enables:*
+*This enables:*
 
   * Canary deployments
 
@@ -495,7 +495,7 @@ Cilium supports the Kubernetes Gateway API.
 
 **13. Layer 7 (Application Layer) Policies**
 
-**Networking layers:*
+*Networking layers:*
 
     L3 → IP
     L4 → TCP/UDP
@@ -505,11 +505,11 @@ Cilium can enforce L7 policies.
 
 **Example:**
 
-**Allow:*
+*Allow:*
 
     GET /products
 
-**Block:*
+*Block:*
 
     DELETE /products
 
@@ -519,11 +519,11 @@ So even though traffic is allowed, specific API actions can be blocked.
 
 Cilium's observability tool is Hubble.
 
-**It can show:*
+*It can show:*
 
     Process → Pod → Service → Destination
 
-**Example log:*
+*Example log:*
 
     Process: python
     Pod: payment-service
@@ -531,11 +531,11 @@ Cilium's observability tool is Hubble.
     Protocol: TCP
     Result: Allowed
 
-**Traditional service meshes only see:*
+*Traditional service meshes only see:*
 
     Pod → Pod
 
-**But Cilium sees:*
+*But Cilium sees:*
 
     Process → Pod → Network
 
@@ -543,13 +543,13 @@ because it observes inside the kernel.
 
 **Real Example (Putting Everything Together)**
 
-**Suppose:*
+*Suppose:*
 
     frontend pod
     backend pod
     database pod
 
-**User request flow:*
+*User request flow:*
 
     User
      ↓
@@ -568,7 +568,7 @@ because it observes inside the kernel.
 5️⃣ Load balance requests
 6️⃣ Provide observability logs
 
-**Example event log:*
+*Example event log:*
 
     frontend → backend
     HTTP GET /products
@@ -577,15 +577,15 @@ because it observes inside the kernel.
 
 **Final Intuition**
 
-**Think of Cilium as:*
+*Think of Cilium as:*
 
 A kernel-powered networking brain for Kubernetes.
 
-**Traditional approach:*
+*Traditional approach:*
 
     iptables + kube-proxy + service mesh + monitoring
 
-**Cilium approach:*
+*Cilium approach:*
 
     eBPF in kernel
     → networking
