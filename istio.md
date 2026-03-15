@@ -1042,7 +1042,9 @@ without modifying application code.
 We’ll cover:
 
 1️⃣ **Why Istio is considered complex (and how companies simplify it)**
+
 2️⃣ **Sidecar vs Ambient Mesh architecture comparison**
+
 3️⃣ **A real step-by-step Istio deployment example using YAML**
 
 **1. Why Istio Is Considered Complex**
