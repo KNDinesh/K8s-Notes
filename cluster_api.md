@@ -1281,8 +1281,11 @@ _Example:_
 _Responsibilities of the Cluster layer:_
 
 • defines the cluster identity
+
 • connects infrastructure and control plane
+
 • manages cluster networking
+
 • represents cluster lifecycle
 
 _So conceptually:_
