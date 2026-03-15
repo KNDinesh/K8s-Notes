@@ -82,15 +82,15 @@ The system keeps working until that state becomes true.
 
 *Previously:*
 
-  **Cloud**	      **Tool**
-  
-  AWS	            kops
-  
-  GCP	            gcloud
-  
-  Azure	          aks-engine
-  
-  Bare metal	    custom scripts
+    **Cloud**	                 **Tool**
+    
+    AWS	                       kops
+    
+    GCP	                       gcloud
+    
+    Azure	                     aks-engine
+    
+    Bare metal	                custom scripts
 
 Every cloud had **different tooling and processes**.
 
