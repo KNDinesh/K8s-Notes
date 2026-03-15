@@ -1425,10 +1425,13 @@ The rest of Cluster API remains unchanged.
 
 Each layer focuses on a specific problem.
 
-**Layer**	                    **Responsibility**
-Cluster	                      overall cluster management
-Machine	                      node lifecycle
-InfrastructureMachine	        VM provisioning
+    **Layer**	                                 **Responsibility**
+    
+    Cluster	                                   overall cluster management
+    
+    Machine	                                   node lifecycle
+    
+    InfrastructureMachine	                     VM provisioning
 
 This makes the system **modular and easier to maintain**.
 
