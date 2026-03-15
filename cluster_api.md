@@ -1231,12 +1231,17 @@ Different infrastructure platforms have **very different APIs**.
 
 _Example differences:_
 
-**Cloud**	              **VM Resource**
-AWS	                    EC2 Instance
-Azure	                  Virtual Machine
-GCP	                    Compute Engine Instance
-vSphere	                VirtualMachine
-Bare metal	            Physical server
+    **Cloud**	                  **VM Resource**
+    
+    AWS	                        EC2 Instance
+    
+    Azure	                      Virtual Machine
+    
+    GCP	                        Compute Engine Instance
+    
+    vSphere	                    VirtualMachine
+    
+    Bare metal	                 Physical server
 
 If Cluster API tried to handle all these directly, the core project would become **huge and unmaintainable**.
 
