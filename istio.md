@@ -1,3 +1,7 @@
+<img width="1101" height="328" alt="image" src="https://github.com/user-attachments/assets/2a2d4169-0bd7-4c06-a10e-ff669ae4f632" />
+
+https://www.solo.io/topics/istio/istio-architecture
+
 **1. First Understand the Problem: Why Istio Exists**
 
 In a microservices architecture, an application is split into many small services.
