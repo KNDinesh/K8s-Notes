@@ -1,3 +1,5 @@
+<img width="1052" height="747" alt="image" src="https://github.com/user-attachments/assets/97e58079-7dc1-4d30-96b5-450849f70a49" />
+
 <img width="1101" height="328" alt="image" src="https://github.com/user-attachments/assets/2a2d4169-0bd7-4c06-a10e-ff669ae4f632" />
 
 https://www.solo.io/topics/istio/istio-architecture
