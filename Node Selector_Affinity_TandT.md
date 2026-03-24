@@ -1,3 +1,5 @@
+--------------------------------------------------------------------------
+
 Kubernetes **drain**, **cordon**, and **uncordon** are essential node maintenance commands. **Cordon** marks a node unschedulable (no new pods), **Drain** safely evicts existing pods to other nodes, and **Uncordon** restores scheduling. These commands **ensure zero-downtime maintenance, upgrades, or node repairs**.
 
 **kubectl cordon <node-name:**
@@ -21,6 +23,8 @@ _Flags:_ Use --ignore-daemonsets (required if DaemonSets are present) and --forc
 _Action:_ Reverses a cordon or drain command, marking the node as schedulable again.
 
 _Usage:_ Used after maintenance is finished to bring the node back into service.
+
+-------------------------------------------------------------------------------------------
 
 🔑 **First: The Core Truth You Should Not Miss**
 
